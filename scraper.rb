@@ -1,3 +1,4 @@
+require 'scraperwiki'
 require 'mechanize'
 
 def save_results_from_page(page, house)
