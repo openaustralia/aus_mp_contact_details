@@ -25,7 +25,7 @@ def save_results_from_page(page, house)
     website = profile_page.link_with(text: 'Personal website').href if profile_page.link_with(text: 'Personal website')
 
     record = {
-      house: house,
+      house: house.to_s,
       aph_id: aph_id,
       full_name: i.at('.title').inner_text,
       electorate: electorate,
