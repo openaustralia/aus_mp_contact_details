@@ -2,14 +2,14 @@ require 'scraperwiki'
 require 'mechanize'
 
 def save_results_from_page(page, house)
-  page.at('.search-filter-results').search(:li).each do |i|
+  page.at('.search-filter-results').search('.row').each do |i|
     electorate, party, contact_page, email, facebook, twitter = nil, nil, nil, nil, nil, nil
 
     aph_id = i.at('.title').at(:a).attr(:href).match(/MPID\=(.*)/)[1]
 
     i.at(:dl).search(:dt).each do |dt|
       case dt.inner_text
-      when 'Member for', 'Senator for'
+      when 'For'
         electorate = dt.next_element.inner_text
       when 'Party'
         party = dt.next_element.inner_text
@@ -27,13 +27,13 @@ def save_results_from_page(page, house)
     record = {
       house: house.to_s,
       aph_id: aph_id,
-      full_name: i.at('.title').inner_text,
+      full_name: i.at('.title').inner_text.strip,
       electorate: electorate,
       party: party,
       profile_page: profile_page_url,
       # Some members don't list this page on their profile (WTF?!) but generating this URL works fine
       contact_page: "http://www.aph.gov.au/Senators_and_Members/Contact_Senator_or_Member?MPID=#{aph_id}",
-      photo_url: i.at('.thumbnail').at(:img).attr(:src),
+      photo_url: i.at('.result__thumbnail_parl').at(:img).attr(:src),
       email: email,
       facebook: facebook,
       twitter: twitter,
